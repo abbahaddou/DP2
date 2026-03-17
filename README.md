@@ -15,7 +15,7 @@ The suite operates on a **Defense-in-Depth** model. Instead of trusting a single
 
 ---
 
-## 🛠 Project Modules
+## Project Modules
 
 ### 1. Document OCR & Extraction (`Offline_V2.ipynb`)
 * **Model:** Qwen2.5-VL-7B-Instruct.
