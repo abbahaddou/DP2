@@ -47,6 +47,14 @@ The suite operates on a **Defense-in-Depth** model. Instead of trusting a single
 * **Input:** Name and City from the document.
 * **Output:** List of digital footprint URLs and snippets.
 
+### 6. Active Liveness & Anti-Spoofing (Video Analysis)
+* **Goal:** To prevent the use of AI-generated selfies or high-resolution "deepfake" portraits.
+* **Approach:** Instead of a static photo, the system requires a short video. 
+* **Mechanism:** * **Temporal Sampling:** Uses OpenCV to capture the user over time, ensuring physical movement and presence.
+    * **Dynamic Extraction:** Employs MTCNN to verify facial consistency across multiple frames.
+    * **AI Defense:** It is significantly more difficult for current generative AI tools to maintain biometric integrity across a video stream than a single static image.
+* **Result:** Confirms the user is a live, present individual rather than a digital injection or a print-attack.
+* 
 ---
 
 ## 🔬 Model Spotlight: Qwen2.5-VL (3B & 7B)
