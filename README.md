@@ -1,73 +1,73 @@
 # AI-Powered Identity Verification & KYC Suite
 
-This repository contains a modular, multi-layered identity verification pipeline. It is designed to automate the onboarding process by extracting data from identity documents (optimized for Moroccan CIN), performing biometric face matching, estimating age via visual heuristics, and detecting fraudulent AI-generated images or synthetic identities.
+This repository features a modular, high-security pipeline for automated identity verification. The system is designed to process official documents (optimized for Moroccan CIN and Passports), perform biometric validation, and detect sophisticated fraud like deepfakes and document inconsistencies.
 
 ---
 
-## General Methodology
-The system follows a **Defense-in-Depth** architecture. Instead of relying on a single data point, it validates identity through five independent pillars:
-1.  **Multimodal Extraction:** Using Vision-Language Models (VLM) to understand document context.
-2.  **Biometric Verification:** Mathematical comparison of facial embeddings.
-3.  **Heuristic Validation:** Cross-referencing visual physical traits (age) against extracted document data.
-4.  **Digital Forensics:** Scanning file metadata for traces of AI manipulation.
-5.  **Social Proofing:** Verifying the "Proof of Existence" through public digital footprints (OSINT).
+## 🧠 Core Methodology: Multi-Layered Trust
+The suite operates on a **Defense-in-Depth** model. Instead of trusting a single scan, it validates identity through five independent verification pillars:
+
+1.  **Semantic Document Extraction:** Using VLMs to understand documents as a human would.
+2.  **Biometric Core:** Mathematical face-matching between live and document portraits.
+3.  **Forensic Meta-Analysis:** Scanning for digital artifacts left by AI generators.
+4.  **Cross-Document Integrity:** Comparing multiple ID types (Passport vs. CIN) for "unconstintous" data.
+5.  **Social Proofing:** Verifying real-world digital footprints via OSINT.
 
 ---
 
-## Project Modules
+## 🛠 Project Modules
 
-### 1. Document OCR & Data Extraction
-* **File:** `Offline_V2.ipynb`
-* **Model/Approach:** **Qwen2.5-VL-7B-Instruct** (Vision-Language Model). Unlike traditional OCR, this approach uses a multimodal transformer to interpret the document layout semantically.
-* **Inputs:** * `recto_path`: Image of the ID front.
-    * `verso_path`: Image of the ID back.
-* **Outputs:** Structured JSON including Full Name, CIN Number, Birth Date, and Address.
+### 1. Document OCR & Extraction (`Offline_V2.ipynb`)
+* **Model:** Qwen2.5-VL-7B-Instruct.
+* **Approach:** Multimodal reasoning. It extracts structured data (Name, CIN, DOB) from both sides of a Moroccan ID simultaneously without needing hard-coded templates.
+* **Input:** Front (recto) and Back (verso) images of the ID.
+* **Output:** Structured JSON data.
 
-### 2. Biometric KYC & Age Verification
-* **File:** `KYC.ipynb`
-* **Model/Approach:** * **Face Matching:** `DeepFace` library (VGG-Face/Facenet) to calculate cosine similarity between faces.
-    * **Age Estimation:** **GPT-4o (OpenAI Vision)**. An LLM analyzes visual cues (skin texture, facial hair, structure) to estimate age range.
-* **Inputs:** * `image_path`: Portrait extracted from the ID.
-    * `selfie_img`: A live user selfie.
-* **Outputs:** * `verification_result`: Boolean (Match/No Match).
-    * `age_report`: JSON containing `estimated_age_range` and `confidence_level`.
+### 2. Biometric KYC & Age Estimation (`KYC.ipynb`)
+* **Model:** `DeepFace` (Facial Recognition) & `GPT-4o` (Visual Analysis).
+* **Approach:** * **Matching:** Calculates cosine similarity between a live selfie and the ID photo.
+    * **Heuristics:** Uses OpenAI Vision to analyze skin texture and facial structure for age estimation to cross-reference with the ID's birth date.
+* **Input:** ID portrait and live user selfie.
 
-### 3. AI-Generated Image Detector
-* **File:** `AI_check.ipynb`
-* **Model/Approach:** **Forensic Metadata Analysis**. Scans image headers and EXIF data for keywords and software signatures associated with generative AI (Midjourney, Stable Diffusion, DALL-E).
-* **Inputs:** User-submitted selfie image.
-* **Outputs:** * `is_ai_likely`: Boolean flag.
-    * `evidence`: Specific tags found (e.g., "AI Keyword found in EXIF").
+### 3. AI-Generated Image (Deepfake) Detector (`AI_check.ipynb`)
+* **Approach:** Forensic Metadata Scan. It inspects image headers for signatures and EXIF tags specific to AI generators like Midjourney, DALL-E, and Stable Diffusion.
+* **Input:** User-submitted selfie.
+* **Output:** `is_ai_likely` flag with specific evidence tags.
 
-### 4. Social Network Existence Validator
-* **File:** `Social_Network (1).ipynb`
-* **Model/Approach:** **OSINT (Open Source Intelligence)** via Search APIs (Tavily/Forum Search). It automates the search for a digital footprint to confirm the user is a real person.
-* **Inputs:** `full_name` and `city` (extracted from the ID).
-* **Outputs:** A list of verified social profile snippets (LinkedIn, Instagram, etc.).
+### 4. Integrity & Anomaly Check (`Anomalies_check_1.ipynb`)
+* **Model:** **Qwen2.5-VL:3b** (via Ollama).
+* **Approach:** **Cross-Document Forensic Validation**. This module takes a Passport and a CIN image and performs a comparative analysis. It looks for "unconstintous" (inconsistent) information between the two documents.
+    * **Deterministic Logic:** Uses `temperature: 0` to ensure exact data extraction and zero "hallucinations."
+    * **Validation Checks:** Compares Full Name, DOB, and ID numbers across both documents. It also calculates if either document is expired based on a reference date (e.g., March 2026).
+* **Input:** Passport image and CIN front image.
+* **Output:** Detailed JSON report identifying `anomalies_found` and a final `verification_status` (Pass/Fail).
 
-### 5. Integrity & Anomaly Check
-* **File:** `Anomalies_check_1.ipynb`
-* **Model/Approach:** **Visual Forensic Analysis**. Checks for digital inconsistencies or manipulation markers within the document image files.
-* **Inputs:** Document images.
-* **Outputs:** Detection report of potential image tampering.
+### 5. Social Footprint Validator (`Social_Network (1).ipynb`)
+* **Approach:** OSINT (Open Source Intelligence). It queries public APIs to find social media profiles (LinkedIn, Instagram) matching the identity.
+* **Input:** Name and City from the document.
+* **Output:** List of digital footprint URLs and snippets.
 
 ---
 
-## 🚀 Execution Workflow
-To achieve the highest security, execute the modules in this order:
-1.  **AI Check:** Ensure the selfie isn't a deepfake.
-2.  **Extraction:** Pull data from the ID card.
-3.  **KYC:** Match the selfie to the ID and estimate age.
-4.  **Cross-Check:** Compare the AI-estimated age against the document's birth date.
-5.  **Social Validation:** Confirm the person exists in public records.
+## 🔬 Model Spotlight: Qwen2.5-VL (3B & 7B)
+The project heavily utilizes **Vision-Language Models (VLM)**. 
+* **Type:** These models are "multimodal," meaning they interpret pixels and text in a shared space. 
+* **Local Execution:** The 3B version is served locally via **Ollama**, ensuring that sensitive personal data (Passports/CINs) never leaves the local environment.
+* **Zero-Shot Learning:** The model does not need training on specific Moroccan ID layouts; it understands the *concept* of an identity document and can adapt to variations in document design.
 
 ---
 
-## 📦 Requirements & Setup
+## 📦 Requirements & Installation
 
 ### Dependencies
 ```bash
-pip install transformers torch qwen_vl_utils  # Extraction
-pip install deepface tf-keras opencv-python   # Biometrics
-pip install langchain-openai pillow pandas    # Reporting/Logic
-pip install tavily-python requests            # OSINT
+# General AI and Vision
+pip install transformers torch qwen_vl_utils
+pip install deepface tf-keras opencv-python
+
+# Local Model Serving
+# Install Ollama ([https://ollama.com](https://ollama.com)) and run:
+# ollama pull qwen2.5vl:3b
+
+# Reporting and Search
+pip install langchain-openai pillow pandas requests tavily-python
