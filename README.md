@@ -1,10 +1,10 @@
-# AI-Powered Identity Verification & KYC Suite
+# AI-Powered Identity Verification - KYC 
 
 This repository features a modular, high-security pipeline for automated identity verification. The system is designed to process official documents (optimized for Moroccan CIN and Passports), perform biometric validation, and detect sophisticated fraud like deepfakes and document inconsistencies.
 
 ---
 
-## 🧠 Core Methodology: Multi-Layered Trust
+## Core Methodology
 The suite operates on a **Defense-in-Depth** model. Instead of trusting a single scan, it validates identity through five independent verification pillars:
 
 1.  **Semantic Document Extraction:** Using VLMs to understand documents as a human would.
@@ -57,7 +57,7 @@ The project heavily utilizes **Vision-Language Models (VLM)**.
 
 ---
 
-## 📦 Requirements & Installation
+## Requirements & Installation
 
 ### Dependencies
 ```bash
