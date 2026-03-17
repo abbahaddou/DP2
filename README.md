@@ -57,7 +57,7 @@ The suite operates on a **Defense-in-Depth** model. Instead of trusting a single
 * 
 ---
 
-## 🔬 Model Spotlight: Qwen2.5-VL (3B & 7B)
+## Model: Qwen2.5-VL (3B & 7B)
 The project heavily utilizes **Vision-Language Models (VLM)**. 
 * **Type:** These models are "multimodal," meaning they interpret pixels and text in a shared space. 
 * **Local Execution:** The 3B version is served locally via **Ollama**, ensuring that sensitive personal data (Passports/CINs) never leaves the local environment.
